@@ -1,0 +1,14 @@
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Visual Studio
+.vs/
+
+# Build output
+bin/
+obj/
+
+# User-specific Visual Studio files
+*.user
+*.suo
