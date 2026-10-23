@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Game.App.ViewModels"
+             x:Class="Game.App.Views.MenuPage"
+             x:DataType="vm:MenuViewModel"
+             Title="Menu">
+
+    <Grid Padding="20" RowSpacing="10" RowDefinitions="Auto,*,Auto">
+        <VerticalStackLayout Grid.Row="0" Spacing="10">
+            <Label Text="{Binding Username, StringFormat='Signed in as {0}'}" />
+            <Button Text="Change username" Command="{Binding ChangeUsernameCommand}" />
+            <Button Text="Create lobby" Command="{Binding CreateGameCommand}" />
+            <Button Text="Open lobbies" Command="{Binding OpenLobbiesCommand}" />
+            <Label Text="{Binding ErrorMessage}" />
+        </VerticalStackLayout>
+
+        <Button Grid.Row="2" Text="Sign out" Command="{Binding LogoutCommand}" />
+    </Grid>
+
+</ContentPage>

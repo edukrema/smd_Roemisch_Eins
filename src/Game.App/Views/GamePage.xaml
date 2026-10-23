@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Game.App.ViewModels"
+             x:Class="Game.App.Views.GamePage"
+             x:DataType="vm:GameViewModel"
+             Title="{Binding Title}">
+
+    <Grid Padding="20" RowSpacing="10" RowDefinitions="Auto,Auto,*">
+        <VerticalStackLayout Grid.Row="0" Spacing="10">
+            <Label Text="{Binding StatusText}" />
+            <Button Text="Start game" Command="{Binding StartCommand}" IsVisible="{Binding CanStart}" />
+            <Button Text="End game" Command="{Binding EndCommand}" IsVisible="{Binding CanEnd}" />
+            <Button Text="Delete game" Command="{Binding DeleteCommand}" IsVisible="{Binding CanDelete}" />
+            <Button Text="Leave game" Command="{Binding LeaveCommand}" IsVisible="{Binding CanLeave}" />
+            <HorizontalStackLayout Spacing="10" IsVisible="{Binding CanEditSettings}">
+                <Label Text="Max. players:" VerticalOptions="Center" />
+                <Entry Text="{Binding NewMaxPlayers}" Keyboard="Numeric" WidthRequest="80" />
+                <Button Text="Apply" Command="{Binding SaveSettingsCommand}" />
+            </HorizontalStackLayout>
+            <Label Text="{Binding ErrorMessage}" />
+        </VerticalStackLayout>
+
+        <Label Grid.Row="1" Text="Players and attributes" />
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Participants}">
+            <CollectionView.EmptyView>
+                <Label Text="No players yet." />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:ParticipantViewModel">
+                    <VerticalStackLayout Padding="0,10" Spacing="5">
+                        <Label Text="{Binding Username}" />
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Attributes}" Spacing="5">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:AttributeRowViewModel">
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                        <Entry Grid.Column="0" Text="{Binding Key}" Placeholder="Key" IsReadOnly="{Binding IsReadOnly}" />
+                                        <Entry Grid.Column="1" Text="{Binding Value}" Placeholder="Value" IsReadOnly="{Binding IsReadOnly}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                        <HorizontalStackLayout Spacing="10" IsVisible="{Binding CanEdit}">
+                            <Button Text="Add attribute"
+                                    Command="{Binding AddAttributeCommand, Source={RelativeSource AncestorType={x:Type vm:GameViewModel}}, x:DataType=vm:GameViewModel}"
+                                    CommandParameter="{Binding .}" />
+                            <Button Text="Save attributes"
+                                    Command="{Binding SaveAttributesCommand, Source={RelativeSource AncestorType={x:Type vm:GameViewModel}}, x:DataType=vm:GameViewModel}"
+                                    CommandParameter="{Binding .}" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+
+</ContentPage>

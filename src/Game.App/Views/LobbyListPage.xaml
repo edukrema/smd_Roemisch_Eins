@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Game.App.ViewModels"
+             xmlns:contracts="clr-namespace:Game.Contracts;assembly=Game.Contracts"
+             x:Class="Game.App.Views.LobbyListPage"
+             x:DataType="vm:LobbyListViewModel"
+             Title="Open lobbies">
+
+    <Grid Padding="20" RowSpacing="10" RowDefinitions="Auto,Auto,*">
+        <Button Grid.Row="0" Text="Refresh" Command="{Binding RefreshCommand}" />
+        <Label Grid.Row="1" Text="{Binding ErrorMessage}" />
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Lobbies}">
+            <CollectionView.EmptyView>
+                <Label Text="No open lobbies." />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="contracts:GameSummaryDto">
+                    <HorizontalStackLayout Padding="0,5" Spacing="10">
+                        <Label Text="{Binding GameMasterName, StringFormat='Game by {0}'}" VerticalOptions="Center" />
+                        <Label Text="{Binding PlayerCount, StringFormat='{0} players'}" VerticalOptions="Center" />
+                        <Label Text="{Binding MaxPlayers, StringFormat='(max. {0})'}" VerticalOptions="Center" />
+                        <Button Text="Join"
+                                Command="{Binding JoinCommand, Source={RelativeSource AncestorType={x:Type vm:LobbyListViewModel}}, x:DataType=vm:LobbyListViewModel}"
+                                CommandParameter="{Binding .}" />
+                    </HorizontalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+
+</ContentPage>

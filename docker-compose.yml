@@ -1,0 +1,15 @@
+# Development only. All credentials here are dev values.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: game
+      POSTGRES_USER: game
+      POSTGRES_PASSWORD: game-dev-password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

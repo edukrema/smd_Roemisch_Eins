@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Game.App.ViewModels"
+             x:Class="Game.App.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Title="Sign in">
+
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="Sign in — a new username registers an account (3 to 20 characters: letters, digits, _ and -)." />
+        <Entry Text="{Binding Username}" Placeholder="Username" />
+        <Entry Text="{Binding Password}" Placeholder="Password" IsPassword="True" />
+        <Button Text="Sign in / Register" Command="{Binding LoginCommand}" />
+        <Label Text="{Binding ErrorMessage}" />
+    </VerticalStackLayout>
+
+</ContentPage>
