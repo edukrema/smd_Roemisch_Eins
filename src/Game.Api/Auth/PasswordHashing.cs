@@ -2,6 +2,7 @@ namespace Game.Api.Auth;
 
 using System.Security.Cryptography;
 
+// REQ14
 /// <summary>PBKDF2 password hashing, stored as "salt.hash" (Base64).</summary>
 public static class PasswordHashing
 {

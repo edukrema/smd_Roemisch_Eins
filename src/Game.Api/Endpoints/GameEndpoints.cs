@@ -14,8 +14,10 @@ public class GameEndpoints
     public static void Map(IEndpointRouteBuilder app)
     {
         var games = app.MapGroup("/games").WithTags("Games").ProducesProblem(401);
+        // REQ02: list open lobbies
         games.MapGet("/", GetOpenLobbies)
             .WithSummary("Lists open lobbies the user is neither leading nor playing in.");
+        // REQ01
         games.MapPost("/", CreateGame)
             .WithSummary("Creates a new lobby with the current user as game master.");
         games.MapGet("/{id:guid}", GetGame)
@@ -24,9 +26,11 @@ public class GameEndpoints
         games.MapDelete("/{id:guid}", DeleteGame)
             .WithSummary("Deletes the game (game master, only in Lobby or Finished).")
             .ProducesProblems(403, 404, 409);
+        // REQ02: join
         games.MapPost("/{id:guid}/join", Join)
             .WithSummary("Joins the game as a player (only in Lobby, if not full).")
             .ProducesProblems(404, 409);
+        // REQ09
         games.MapPost("/{id:guid}/leave", Leave)
             .WithSummary("Leaves the game as a player.")
             .ProducesProblems(404, 409);
@@ -36,9 +40,11 @@ public class GameEndpoints
         games.MapPost("/{id:guid}/end", End)
             .WithSummary("Ends the game (game master).")
             .ProducesProblems(403, 404, 409);
+        // REQ08
         games.MapPut("/{id:guid}/settings", UpdateSettings)
             .WithSummary("Changes the maximum number of players (game master, only in Lobby).")
             .ProducesProblems(400, 403, 404, 409);
+        // REQ04, REQ05: attributes only, the username is not one of them
         games.MapPut("/{id:guid}/participants/{userId:guid}/attributes", ReplaceAttributes)
             .WithSummary("Replaces all attributes of a player (game master).")
             .ProducesProblems(400, 403, 404, 409);
@@ -78,6 +84,7 @@ public class GameEndpoints
                        .SingleOrDefaultAsync(g => g.Id == id)
                    ?? throw new NotFoundException("The game was not found.");
 
+        // REQ16
         if (!game.IsGameMaster(currentUser.Id) && !game.IsParticipant(currentUser.Id))
         {
             throw new ForbiddenException("Only the game master and the players can see this game.");
@@ -182,6 +189,7 @@ public class GameEndpoints
         return TypedResults.NoContent();
     }
 
+    // REQ15: controlling actions only for the game master
     private static void EnsureGameMaster(Game game, Guid userId)
     {
         if (!game.IsGameMaster(userId))

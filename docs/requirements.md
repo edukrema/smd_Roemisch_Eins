@@ -28,7 +28,6 @@ Szenarien zu diesen Zielen: [architecture.md, Kapitel 10](architecture.md#10-qua
 
 * REQ01: Ein Spielleiter kann ein Spiel (Lobby) erstellen
 * REQ02: Spieler sehen offene Lobbys und können ihnen beitreten
-* REQ03: Spieler bringen beim Beitritt bereits eigene dynamische Attribute (Key-Value) mit *(offen)*
 * REQ04: Der Spielleiter kann alle Attribute eines Spielers überschreiben, nur den Username nicht
 * REQ05: Der Spielleiter kann Spielern im Spielverlauf Attribute zuweisen, ändern und entfernen
 * REQ06: Usernames sind eindeutig (ohne Beachtung der Groß-/Kleinschreibung)
@@ -47,7 +46,7 @@ Szenarien zu diesen Zielen: [architecture.md, Kapitel 10](architecture.md#10-qua
 * REQ19: Der Server validiert alle Eingaben und meldet Fehler einheitlich (ProblemDetails)
 * REQ20: Gleichzeitige Aktionen dürfen den Spielzustand nicht inkonsistent machen (z. B. überfüllte Lobby)
 * REQ21: Die App stürzt bei Fehlern nicht ab und verbindet sich nach Verbindungsabbruch neu
-* REQ22: Die REST-Schnittstelle ist über OpenAPI beschrieben *(offen)*
+* REQ22: Die REST-Schnittstelle ist über OpenAPI beschrieben
 * REQ23: Verschlüsselte Übertragung über HTTPS mit HSTS und HTTPS-Redirect (data in transit)
 * REQ25: Die Verbindung zwischen Api und Datenbank ist per TLS verschlüsselt
 * REQ24: Automatisierte Tests für Domain, Api und ViewModels
@@ -64,6 +63,7 @@ Szenarien zu diesen Zielen: [architecture.md, Kapitel 10](architecture.md#10-qua
 * NREQ08: Web-Frontend (daher kein CORS)
 * NREQ09: Horizontale Skalierung der Api (mehrere Instanzen)
 * NREQ10: Mehrsprachigkeit
+* NREQ11: Eigene Attribute, die Spieler beim Beitritt mitbringen (Attribute vergibt ausschließlich der Spielleiter)
 
 ## Stakeholder
 

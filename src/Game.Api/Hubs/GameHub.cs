@@ -15,6 +15,7 @@ public class GameHub(GameDbContext db) : Hub
     public async Task JoinGame(Guid gameId)
     {
         var userId = Context.User!.GetUserId();
+        // REQ16
         var isMember = await db.Games.AnyAsync(g =>
             g.Id == gameId && (g.GameMasterId == userId || g.Participants.Any(p => p.UserId == userId)));
 

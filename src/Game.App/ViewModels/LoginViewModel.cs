@@ -14,6 +14,7 @@ public partial class LoginViewModel(IAuthService authService, INavigationService
     public partial string? Password { get; set; }
 
     [RelayCommand]
+    // REQ13
     private Task LoginAsync() => RunAsync(async () =>
     {
         await authService.LoginAsync(Username ?? "", Password ?? "");

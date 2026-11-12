@@ -5,6 +5,7 @@ using Game.Domain;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
+// REQ19
 /// <summary>The central place where exceptions become ProblemDetails.</summary>
 public class ProblemExceptionHandler(IProblemDetailsService problemDetailsService, ILogger<ProblemExceptionHandler> logger)
     : IExceptionHandler

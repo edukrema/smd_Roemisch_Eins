@@ -4,6 +4,7 @@ using Game.Api.Errors;
 using Game.Domain;
 using Microsoft.EntityFrameworkCore;
 
+// REQ20
 /// <summary>Pessimistic locking for all changes to a game (ADR-0005).</summary>
 public static class GameLocking
 {

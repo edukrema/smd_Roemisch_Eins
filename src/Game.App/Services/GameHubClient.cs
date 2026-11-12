@@ -22,6 +22,7 @@ public class GameHubClient : IGameHubClient
                     options.WebSocketConfiguration = socket => socket.RemoteCertificateValidationCallback =
                         (_, certificate, _, errors) => DevCertificate.IsValid(new Uri(AppSettings.ApiBaseUrl).Host, certificate, errors);
                 })
+            // REQ21: reconnect after connection loss
             .WithAutomaticReconnect()
             .Build();
 

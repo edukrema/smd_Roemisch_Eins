@@ -241,7 +241,6 @@ Die Qualitätsziele mit Priorität stehen in [requirements.md](requirements.md#q
 | R05 | Keine Passwortregeln; Tippfehler im Username legt neues Konto an | Schwache Passwörter, versehentliche Doppelkonten | Mindestlänge; Registrierung und Login trennen |
 | R06 | Falsches Passwort liefert 409 statt 401 | Nicht REST-konform | Eigene Exception für fehlgeschlagene Anmeldung → 401 |
 | R07 | Keine OpenAPI-Beschreibung (REQ22 offen) | Schnittstelle nur im README dokumentiert | `AddOpenApi` / `MapOpenApi` |
-| R08 | Spieler bringen beim Beitritt keine Attribute mit (REQ03 offen) | Kernanforderung der Aufgabenstellung nicht erfüllt | `JoinRequest` mit Attributliste, Eingabe in der App |
 | R10 | App-Services (`AuthService`, `GameApiClient`, `GameHubClient`) ohne Tests | Fehler in Netzwerk- und Reconnect-Logik fallen spät auf | Tests mit gemocktem `HttpMessageHandler` |
 | R11 | Keine CI-Pipeline | Fehler fallen erst lokal auf | GitHub Actions mit `dotnet build` und `dotnet test` |
 

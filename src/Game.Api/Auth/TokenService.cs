@@ -26,6 +26,7 @@ public class TokenService(IConfiguration configuration)
         return new JsonWebTokenHandler().CreateToken(descriptor);
     }
 
+    // REQ17: signing key from configuration
     public static SymmetricSecurityKey GetSigningKey(IConfiguration configuration) =>
         new(Encoding.UTF8.GetBytes(configuration["Auth:SigningKey"]
             ?? throw new InvalidOperationException("Auth:SigningKey is not configured.")));

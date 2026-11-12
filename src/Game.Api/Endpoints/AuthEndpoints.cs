@@ -10,6 +10,7 @@ public class AuthEndpoints
 {
     public static void Map(IEndpointRouteBuilder app)
     {
+        // REQ12
         app.MapPost("/auth/login", Login).AllowAnonymous()
             .WithTags("Auth")
             .WithSummary("Signs in and returns a JWT; an unknown username registers a new account.")

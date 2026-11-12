@@ -12,9 +12,12 @@ using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// REQ11: persistent in PostgreSQL
 builder.Services.AddDbContext<GameDbContext>(options =>
 {
+    // REQ25
     // Data in transit: never talk to the database without TLS, whatever the connection string says.
+    // REQ18: connection string from configuration (User Secrets), not in the repo
     var connection = new NpgsqlConnectionStringBuilder(builder.Configuration.GetConnectionString("Game"));
     if (connection.SslMode < SslMode.Require)
     {
@@ -60,6 +63,7 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<IGameNotifier, GameNotifier>();
 builder.Services.AddHealthChecks().AddDbContextCheck<GameDbContext>();
 
+// REQ22
 // API description at /openapi/v1.json; the Bearer scheme enables the "Authorize" button in Swagger UI.
 builder.Services.AddOpenApi(options =>
 {
@@ -101,6 +105,7 @@ if (app.Environment.IsDevelopment())
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
+// REQ23
 // Data in transit: HTTPS only. HSTS is skipped in Development (and for localhost anyway).
 if (!app.Environment.IsDevelopment())
 {

@@ -27,6 +27,7 @@ public class GameDbContext(DbContextOptions<GameDbContext> options) : DbContext(
             user.Property(u => u.Id).ValueGeneratedNever();
             user.Property(u => u.Username).HasMaxLength(UserProfile.UsernameMaxLength);
             user.Property(u => u.UsernameNormalized).HasMaxLength(UserProfile.UsernameMaxLength);
+            // REQ06: unique, case-insensitive
             user.HasIndex(u => u.UsernameNormalized).IsUnique();
             user.Ignore(u => u.HasUsername);
         });

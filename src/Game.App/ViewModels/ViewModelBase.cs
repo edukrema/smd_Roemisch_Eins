@@ -11,6 +11,7 @@ public abstract partial class ViewModelBase(INavigationService navigation) : Obs
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }
 
+    // REQ21: no crash on errors
     /// <summary>Runs an action and shows errors instead of letting the app crash.</summary>
     protected async Task RunAsync(Func<Task> action)
     {

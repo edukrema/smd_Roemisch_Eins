@@ -3,6 +3,7 @@ namespace Game.Api.Hubs;
 using Game.Contracts;
 using Microsoft.AspNetCore.SignalR;
 
+// REQ10: server push via SignalR
 public class GameNotifier(IHubContext<GameHub> hubContext) : IGameNotifier
 {
     public async Task GameChangedAsync(Guid gameId)

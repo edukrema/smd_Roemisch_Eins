@@ -2,6 +2,7 @@ namespace Game.Domain;
 
 public class Game
 {
+    // REQ08
     public const int MaxPlayersLowerLimit = 1;
     public const int MaxPlayersUpperLimit = 50;
 
@@ -20,6 +21,7 @@ public class Game
 
     public int MaxPlayers { get; private set; }
 
+    // REQ07: Lobby -> Running -> Finished (Start, End, EnsureCanBeDeleted)
     public GameStatus Status { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
