@@ -95,7 +95,7 @@ das Menü. Umbenennen geht dort über *Change username*.
 
 Die App spricht nur HTTPS/WSS; Android verbietet Klartext auch im Debug-Build
 (`network_security_config.xml`). Emulator und Simulator vertrauen dem Dev-Zertifikat nicht,
-deshalb akzeptieren Debug-Builds es für `localhost` (`Services/DevCertificate.cs`).
+deshalb akzeptieren Debug-Builds es für `localhost` (`Services/CertificateValidation.cs`).
 Release-Builds prüfen Zertifikate normal.
 
 ## Tests

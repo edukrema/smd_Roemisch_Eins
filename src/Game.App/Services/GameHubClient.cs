@@ -18,9 +18,9 @@ public class GameHubClient : IGameHubClient
                 options =>
                 {
                     options.AccessTokenProvider = authService.GetAccessTokenAsync;
-                    options.HttpMessageHandlerFactory = _ => DevCertificate.CreateHandler();
+                    options.HttpMessageHandlerFactory = _ => CertificateValidation.CreateHandler();
                     options.WebSocketConfiguration = socket => socket.RemoteCertificateValidationCallback =
-                        (_, certificate, _, errors) => DevCertificate.IsValid(new Uri(AppSettings.ApiBaseUrl).Host, certificate, errors);
+                        (_, certificate, _, errors) => CertificateValidation.IsValid(new Uri(AppSettings.ApiBaseUrl).Host, certificate, errors);
                 })
             // REQ21: reconnect after connection loss
             .WithAutomaticReconnect()

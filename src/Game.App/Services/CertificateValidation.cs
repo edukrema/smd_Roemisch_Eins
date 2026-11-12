@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 /// iOS simulator do not trust. Debug builds therefore accept it, but only for localhost.
 /// Release builds use the normal certificate validation of the platform.
 /// </summary>
-public static class DevCertificate
+public static class CertificateValidation
 {
     public static HttpMessageHandler CreateHandler()
     {

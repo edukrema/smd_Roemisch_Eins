@@ -163,7 +163,7 @@ Ein Produktivbetrieb ist nicht Teil des Projekts (siehe NREQ09).
 - App ↔ Api: HTTPS bzw. WSS (`https://localhost:5001`), `UseHttpsRedirection`, `UseHsts`
   außerhalb von Development. Android verbietet Klartext per `network_security_config.xml`.
 - Das Dev-Zertifikat akzeptiert die App nur in Debug-Builds und nur für `localhost`
-  (`DevCertificate`).
+  (`CertificateValidation`).
 - Api ↔ PostgreSQL: TLS, die Api erzwingt `SSL Mode=Require`.
 - Über SignalR werden keine Nutzdaten übertragen, nur Signale mit der Game-ID.
 
