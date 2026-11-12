@@ -14,7 +14,7 @@ Architekturentscheidungen in [docs/adr](adr/README.md).
 | Live-Updates | SignalR sendet nur Signale, Daten kommen immer per REST (eine einzige Stelle für Autorisierung) | [ADR-0004](adr/0004-live-updates-signalr.md) |
 | Konsistenz bei Nebenläufigkeit | Jede Änderung sperrt die Game-Zeile (`SELECT … FOR UPDATE`) in einer Transaktion | [ADR-0005](adr/0005-nebenlaeufigkeit.md) |
 | Eindeutige Regeln | Zustandsautomat Lobby → Running → Finished in der Domain-Klasse `Game` | [ADR-0006](adr/0006-spielzustand-und-regeln.md) |
-| Authentifizierung ohne externen Dienst (AC05) | Die Api verwaltet Konten selbst (PBKDF2) und stellt eigene JWTs aus | [ADR-0008](adr/0008-authentifizierung-keycloak.md) ⚠️ veraltet |
+| Authentifizierung ohne externen Dienst (AC05) | Die Api verwaltet Konten selbst (PBKDF2) und stellt eigene JWTs aus | [ADR-0008](adr/0008-authentifizierung.md) |
 | Einheitliche Fehler | Zentraler Exception-Handler → ProblemDetails | [ADR-0010](adr/0010-fehlerbehandlung-api-konventionen.md) |
 | Persistenz ohne kommerzielle DB (AC03) | PostgreSQL mit EF Core und Migrations | [ADR-0011](adr/0011-datenbank-postgresql.md) |
 | Bedienbare Mobile-App | .NET MAUI mit MVVM (CommunityToolkit.Mvvm) | [ADR-0001](adr/0001-solution-struktur.md) |
@@ -213,10 +213,6 @@ unerwartete Fehler auf Error. Health-Check unter `/health` inklusive Datenbankve
 
 Siehe [docs/adr](adr/README.md) (ADR-0001 bis ADR-0011).
 
-> ⚠️ ADR-0008 beschreibt noch Keycloak (OIDC, PKCE, SecureStorage). Umgesetzt ist ein eigener
-> Login mit PBKDF2 und selbst ausgestellten JWTs (siehe 8.1). Keycloak wird auch in ADR-0001,
-> 0002, 0004, 0007, 0009, 0011 und im ADR-Index erwähnt.
-
 ## 10. Qualitätsanforderungen
 
 Die Qualitätsziele mit Priorität stehen in [requirements.md](requirements.md#qualitätsziele).
@@ -245,7 +241,6 @@ Die Qualitätsziele mit Priorität stehen in [requirements.md](requirements.md#q
 | R06 | Falsches Passwort liefert 409 statt 401 | Nicht REST-konform | Eigene Exception für fehlgeschlagene Anmeldung → 401 |
 | R07 | Keine OpenAPI-Beschreibung (REQ22 offen) | Schnittstelle nur im README dokumentiert | `AddOpenApi` / `MapOpenApi` |
 | R08 | Spieler bringen beim Beitritt keine Attribute mit (REQ03 offen) | Kernanforderung der Aufgabenstellung nicht erfüllt | `JoinRequest` mit Attributliste, Eingabe in der App |
-| R09 | ADR-0008 und weitere ADRs beschreiben Keycloak | Dokumentation widerspricht dem Code | ADR-0008 ersetzen, Verweise anpassen |
 | R10 | App-Services (`AuthService`, `GameApiClient`, `GameHubClient`) ohne Tests | Fehler in Netzwerk- und Reconnect-Logik fallen spät auf | Tests mit gemocktem `HttpMessageHandler` |
 | R11 | Keine CI-Pipeline | Fehler fallen erst lokal auf | GitHub Actions mit `dotnet build` und `dotnet test` |
 
