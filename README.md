@@ -18,7 +18,7 @@ tests/
   Game.Domain.Tests Regeln ohne Datenbank
   Game.Api.Tests    Endpoints gegen PostgreSQL (Testcontainers), Fake-Auth
   Game.App.Tests    ViewModels mit gemockten Services
-docker-compose.yml  PostgreSQL (nur Entwicklung)
+docker-compose.yml  PostgreSQL mit TLS (nur Entwicklung)
 ```
 
 ## Voraussetzungen
@@ -35,7 +35,10 @@ docker compose up -d
 
 | Dienst | Adresse | Zugang (nur Dev) |
 |---|---|---|
-| PostgreSQL | `localhost:5432`, DB `game` | `game` / `game-dev-password` |
+| PostgreSQL | `localhost:5432`, DB `game`, TLS an | `game` / `game-dev-password` |
+
+Nach dem Umstieg auf TLS (alpine → Debian-Image) einmal das alte
+Volume löschen: `docker compose down -v`.
 
 ## 2. Api starten
 
@@ -46,10 +49,14 @@ dotnet user-secrets set ConnectionStrings:Game \
   "Host=localhost;Database=game;Username=game;Password=game-dev-password" \
   --project src/Game.Api
 
+
+dotnet dev-certs https --trust     # einmalig: HTTPS-Dev-Zertifikat
 dotnet run --project src/Game.Api
 ```
 
-Die Api läuft auf http://localhost:5000. `GET /health` prüft auch die Datenbank.
+Die Api läuft auf https://localhost:5001 (http://localhost:5000 leitet auf HTTPS um). Zur
+Datenbank verbindet sie sich immer per TLS (`SSL Mode=Require` wird im Code erzwungen).
+`GET /health` prüft auch die Datenbank.
 
 **Auth:** `POST /auth/login` mit `{ "username", "password" }` liefert ein JWT (8 h gültig).
 Ein unbekannter Username registriert automatisch ein neues Konto und setzt den Username
@@ -68,7 +75,7 @@ dotnet ef migrations add <Name> --project src/Game.Api --output-dir Data/Migrati
 
 ## 3. App starten
 
-Die Api-URL steht zentral in `src/Game.App/AppSettings.cs` (Standard: `localhost:5000`).
+Die Api-URL steht zentral in `src/Game.App/AppSettings.cs` (Standard: `https://localhost:5001`).
 
 - **Windows:** `dotnet build src/Game.App -f net10.0-windows10.0.19041.0`, dann die exe unter
   `src/Game.App/bin/Debug/net10.0-windows10.0.19041.0/win10-x64/Game.App.exe` starten —
@@ -78,7 +85,7 @@ Die Api-URL steht zentral in `src/Game.App/AppSettings.cs` (Standard: `localhost
 - **Android-Emulator:** Der Emulator erreicht den Rechner nicht über `localhost`, deshalb
   einmal pro Emulator-Start den Api-Port umleiten:
   ```bash
-  adb reverse tcp:5000 tcp:5000
+  adb reverse tcp:5001 tcp:5001
   ```
 - **iOS-Simulator:** `localhost` funktioniert direkt (nur auf macOS).
 
@@ -86,8 +93,10 @@ Ablauf: Username und Passwort eingeben, *Sign in / Register* registriert beim er
 automatisch und übernimmt den Username direkt als Anzeigenamen, anschließend erscheint
 das Menü. Umbenennen geht dort über *Change username*.
 
-Klartext-HTTP ist nur in Debug-Builds erlaubt (Android `UsesCleartextTraffic`). Unter iOS
-sind nur lokale Adressen ohne TLS erlaubt.
+Die App spricht nur HTTPS/WSS; Android verbietet Klartext auch im Debug-Build
+(`network_security_config.xml`). Emulator und Simulator vertrauen dem Dev-Zertifikat nicht,
+deshalb akzeptieren Debug-Builds es für `localhost` (`Services/DevCertificate.cs`).
+Release-Builds prüfen Zertifikate normal.
 
 ## Tests
 
@@ -99,7 +108,7 @@ dotnet test tests/Game.App.Tests      # braucht den MAUI-Workload
 
 ## API
 
-**Swagger UI** (nur Development): http://localhost:5000/swagger.
+**Swagger UI** (nur Development): https://localhost:5001/swagger.
 
 Alle Endpoints außer `/health` und `/auth/login` brauchen ein gültiges Access-Token
 (`Authorization: Bearer <token>`). Fehler kommen als ProblemDetails: 400 ungültige Eingabe,

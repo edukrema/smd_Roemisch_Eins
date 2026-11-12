@@ -3,12 +3,8 @@ using Android.Runtime;
 
 namespace Game.App;
 
-#if DEBUG
-// Cleartext HTTP to the Api only in debug builds (local development).
-[Application(UsesCleartextTraffic = true)]
-#else
+// No cleartext HTTP, see Resources/xml/network_security_config.xml.
 [Application]
-#endif
 public class MainApplication : MauiApplication
 {
 	public MainApplication(IntPtr handle, JniHandleOwnership ownership)

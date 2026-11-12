@@ -1,7 +1,12 @@
 # Development only. All credentials here are dev values.
 services:
   postgres:
-    image: postgres:17-alpine
+    # Debian image (not alpine): it ships a self-signed "snakeoil" certificate for TLS.
+    image: postgres:17
+    command: >
+      -c ssl=on
+      -c ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+      -c ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
     environment:
       POSTGRES_DB: game
       POSTGRES_USER: game

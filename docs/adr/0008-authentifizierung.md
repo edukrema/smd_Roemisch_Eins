@@ -22,5 +22,5 @@ ist nicht verfügbar (AC05).
 ## Konsequenzen
 + Keine zusätzliche Infrastruktur, einfach testbar (Fake-Auth in Tests).
 - Sicherheit liegt in eigenem Code. Offene Punkte (Signierschlüssel im Repo,
-  kein Rate-Limiting, HTTP statt HTTPS) siehe Risiken R01–R06 in
+  kein Rate-Limiting) siehe Risiken R02–R06 in
   [architecture.md](../architecture.md#11-risiken-und-technische-schulden).

@@ -48,7 +48,8 @@ Szenarien zu diesen Zielen: [architecture.md, Kapitel 10](architecture.md#10-qua
 * REQ20: Gleichzeitige Aktionen dürfen den Spielzustand nicht inkonsistent machen (z. B. überfüllte Lobby)
 * REQ21: Die App stürzt bei Fehlern nicht ab und verbindet sich nach Verbindungsabbruch neu
 * REQ22: Die REST-Schnittstelle ist über OpenAPI beschrieben *(offen)*
-* REQ23: Verschlüsselte Übertragung über HTTPS mit HSTS und HTTPS-Redirect (data in transit) *(offen)*
+* REQ23: Verschlüsselte Übertragung über HTTPS mit HSTS und HTTPS-Redirect (data in transit)
+* REQ25: Die Verbindung zwischen Api und Datenbank ist per TLS verschlüsselt
 * REQ24: Automatisierte Tests für Domain, Api und ViewModels
 
 ### Nicht-Anforderungen
@@ -101,6 +102,6 @@ darüber, die Spieler sehen jede Änderung sofort.
 
 | Partner | Kanal | Inhalt |
 |---|---|---|
-| MAUI-App → Api | HTTP/REST, JSON, `Authorization: Bearer <JWT>` | Login, Profil, Spiele, Attribute |
-| Api → MAUI-App | SignalR (WebSocket), Token als Query-Parameter | nur Signale (`GameChanged`, `LobbiesChanged`), Daten holt die App per REST |
-| Api → PostgreSQL | EF Core (Npgsql) | Accounts, Profile, Spiele, Teilnehmer, Attribute |
+| MAUI-App → Api | HTTPS/REST, JSON, `Authorization: Bearer <JWT>` | Login, Profil, Spiele, Attribute |
+| Api → MAUI-App | SignalR (WebSocket über TLS), Token als Query-Parameter | nur Signale (`GameChanged`, `LobbiesChanged`), Daten holt die App per REST |
+| Api → PostgreSQL | EF Core (Npgsql), TLS | Accounts, Profile, Spiele, Teilnehmer, Attribute |

@@ -13,7 +13,13 @@ public class GameHubClient : IGameHubClient
     {
         _connection = new HubConnectionBuilder()
             .WithUrl(AppSettings.ApiBaseUrl + GameHubContract.Path,
-                options => options.AccessTokenProvider = authService.GetAccessTokenAsync)
+                options =>
+                {
+                    options.AccessTokenProvider = authService.GetAccessTokenAsync;
+                    options.HttpMessageHandlerFactory = _ => DevCertificate.CreateHandler();
+                    options.WebSocketConfiguration = socket => socket.RemoteCertificateValidationCallback =
+                        (_, certificate, _, errors) => DevCertificate.IsValid(new Uri(AppSettings.ApiBaseUrl).Host, certificate, errors);
+                })
             .WithAutomaticReconnect()
             .Build();
 

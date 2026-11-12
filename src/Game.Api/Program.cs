@@ -8,11 +8,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<GameDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Game")));
+{
+    // Data in transit: never talk to the database without TLS, whatever the connection string says.
+    var connection = new NpgsqlConnectionStringBuilder(builder.Configuration.GetConnectionString("Game"));
+    if (connection.SslMode < SslMode.Require)
+    {
+        connection.SslMode = SslMode.Require;
+    }
+
+    options.UseNpgsql(connection.ConnectionString);
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -90,6 +100,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+
+// Data in transit: HTTPS only. HSTS is skipped in Development (and for localhost anyway).
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
 
 if (app.Environment.IsDevelopment())
 {

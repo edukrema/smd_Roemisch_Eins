@@ -12,7 +12,7 @@ public static class MauiProgram
 		builder.UseMauiApp<App>();
 
 		builder.Services.AddSingleton<IAuthService, AuthService>();
-		builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(AppSettings.ApiBaseUrl) });
+		builder.Services.AddSingleton(new HttpClient(DevCertificate.CreateHandler()) { BaseAddress = new Uri(AppSettings.ApiBaseUrl) });
 		builder.Services.AddSingleton<IGameApiClient, GameApiClient>();
 		builder.Services.AddSingleton<IGameHubClient, GameHubClient>();
 		builder.Services.AddSingleton<INavigationService, ShellNavigationService>();

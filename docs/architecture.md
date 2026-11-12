@@ -118,13 +118,13 @@ flowchart LR
         A1[MAUI-App<br/>Android-Emulator / Windows]
     end
     subgraph Entwicklungsrechner
-        API[Game.Api<br/>localhost:5000]
+        API[Game.Api<br/>localhost:5001]
         subgraph Docker
             PG[(PostgreSQL 17<br/>:5432)]
         end
     end
-    A1 -- "HTTP + WebSocket<br/>(Emulator: adb reverse tcp:5000)" --> API
-    API -- Npgsql --> PG
+    A1 -- "HTTPS + WSS<br/>(Emulator: adb reverse tcp:5001)" --> API
+    API -- "Npgsql (TLS)" --> PG
 ```
 
 | Element | Ausführung |
@@ -160,9 +160,11 @@ Ein Produktivbetrieb ist nicht Teil des Projekts (siehe NREQ09).
 
 ### 8.3 Data in Motion
 
-- App ↔ Api: aktuell HTTP ohne TLS. Klartext ist auf Android nur in Debug-Builds erlaubt
-  (`UsesCleartextTraffic` nur unter `#if DEBUG`), Release-Builds würden HTTP blockieren.
-- HTTPS, HSTS und HTTPS-Redirect sind offen (REQ23, Kapitel 11).
+- App ↔ Api: HTTPS bzw. WSS (`https://localhost:5001`), `UseHttpsRedirection`, `UseHsts`
+  außerhalb von Development. Android verbietet Klartext per `network_security_config.xml`.
+- Das Dev-Zertifikat akzeptiert die App nur in Debug-Builds und nur für `localhost`
+  (`DevCertificate`).
+- Api ↔ PostgreSQL: TLS, die Api erzwingt `SSL Mode=Require`.
 - Über SignalR werden keine Nutzdaten übertragen, nur Signale mit der Game-ID.
 
 ### 8.4 Data at Rest
@@ -233,7 +235,6 @@ Die Qualitätsziele mit Priorität stehen in [requirements.md](requirements.md#q
 
 | ID | Risiko / Schuld | Auswirkung | Mögliche Maßnahme |
 |---|---|---|---|
-| R01 | Kein HTTPS, kein HSTS (REQ23 offen) | Token und Passwörter könnten im Netzwerk mitgelesen werden | HTTPS-Profil, `UseHttpsRedirection`, `UseHsts`, App auf `https://` umstellen |
 | R02 | JWT-Signierschlüssel in `appsettings.json` committed | Wer das Repo kennt, kann gültige Tokens erzeugen | Schlüssel in User Secrets bzw. Umgebungsvariable, Dev-Wert aus dem Repo entfernen |
 | R03 | Kein Rate-Limiting bzw. Lockout am Login | Passwörter können durchprobiert werden | `AddRateLimiter` für `/auth/login` |
 | R04 | PBKDF2 mit 100.000 Iterationen | Unter der OWASP-Empfehlung (600.000 für SHA-256) | Iterationen erhöhen, Hash-Format um Iterationszahl erweitern |

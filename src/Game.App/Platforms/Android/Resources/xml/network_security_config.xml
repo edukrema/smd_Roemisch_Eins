@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Data in transit: no unencrypted HTTP, not even in Debug builds (overrides usesCleartextTraffic). -->
+<network-security-config>
+	<base-config cleartextTrafficPermitted="false" />
+</network-security-config>

@@ -12,7 +12,13 @@ using Testcontainers.PostgreSql;
 /// <summary>Starts the Api once per test run against a real PostgreSQL container.</summary>
 public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17-alpine").Build();
+    // Same TLS setup as docker-compose.yml, so the tests also cover the encrypted connection.
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17")
+        .WithCommand(
+            "-c", "ssl=on",
+            "-c", "ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem",
+            "-c", "ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key")
+        .Build();
 
     public HttpClient CreateClientFor(Guid userId)
     {

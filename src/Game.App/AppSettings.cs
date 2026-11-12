@@ -6,5 +6,5 @@ namespace Game.App;
 /// </summary>
 public static class AppSettings
 {
-    public const string ApiBaseUrl = "http://localhost:5000";
+    public const string ApiBaseUrl = "https://localhost:5001";
 }
