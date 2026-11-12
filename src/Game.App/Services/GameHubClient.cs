@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.SignalR.Client;
 public class GameHubClient : IGameHubClient
 {
     private readonly HubConnection _connection;
+    private readonly IDispatcher _dispatcher;
     private Guid? _watchedGameId;
     private bool _watchingLobbies;
 
-    public GameHubClient(IAuthService authService)
+    public GameHubClient(IAuthService authService, IDispatcher dispatcher)
     {
+        _dispatcher = dispatcher;
         _connection = new HubConnectionBuilder()
             .WithUrl(AppSettings.ApiBaseUrl + GameHubContract.Path,
                 options =>
@@ -103,7 +105,8 @@ public class GameHubClient : IGameHubClient
         }
     }
 
-    private void RaiseGameChanged(Guid gameId) => MainThread.BeginInvokeOnMainThread(() => GameChanged?.Invoke(gameId));
+    // SignalR callbacks arrive on a background thread; subscribers touch the UI.
+    private void RaiseGameChanged(Guid gameId) => _dispatcher.Dispatch(() => GameChanged?.Invoke(gameId));
 
-    private void RaiseLobbiesChanged() => MainThread.BeginInvokeOnMainThread(() => LobbiesChanged?.Invoke());
+    private void RaiseLobbiesChanged() => _dispatcher.Dispatch(() => LobbiesChanged?.Invoke());
 }
