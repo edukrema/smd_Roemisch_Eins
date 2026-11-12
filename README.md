@@ -99,6 +99,8 @@ dotnet test tests/Game.App.Tests      # braucht den MAUI-Workload
 
 ## API
 
+**Swagger UI** (nur Development): http://localhost:5000/swagger.
+
 Alle Endpoints außer `/health` und `/auth/login` brauchen ein gültiges Access-Token
 (`Authorization: Bearer <token>`). Fehler kommen als ProblemDetails: 400 ungültige Eingabe,
 401 nicht angemeldet, 403 kein Recht, 404 nicht gefunden, 409 Regelverstoß, 500 unerwartet.

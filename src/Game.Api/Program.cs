@@ -7,6 +7,7 @@ using Game.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,36 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<IGameNotifier, GameNotifier>();
 builder.Services.AddHealthChecks().AddDbContextCheck<GameDbContext>();
 
+// API description at /openapi/v1.json; the Bearer scheme enables the "Authorize" button in Swagger UI.
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, _, _) =>
+    {
+        document.Info = new OpenApiInfo
+        {
+            Title = "Game Master API",
+            Version = "v1",
+            Description = "Game masters create games, players join, and the game master manages the players' attributes."
+        };
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>
+        {
+            ["Bearer"] = new OpenApiSecurityScheme { Type = SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT" }
+        };
+        return Task.CompletedTask;
+    });
+    // Only routes without AllowAnonymous need the token.
+    options.AddOperationTransformer((operation, context, _) =>
+    {
+        if (!context.Description.ActionDescriptor.EndpointMetadata.OfType<IAllowAnonymous>().Any())
+        {
+            operation.Security = [new OpenApiSecurityRequirement { [new OpenApiSecuritySchemeReference("Bearer", context.Document)] = [] }];
+        }
+
+        return Task.CompletedTask;
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -59,10 +90,22 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+
+if (app.Environment.IsDevelopment())
+{
+    // Before UseAuthorization, otherwise the fallback policy would block the UI.
+    app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Game API"));
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHealthChecks("/health").AllowAnonymous();
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi().AllowAnonymous();
+}
+
 AuthEndpoints.Map(app);
 MeEndpoints.Map(app);
 GameEndpoints.Map(app);

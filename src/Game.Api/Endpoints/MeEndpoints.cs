@@ -10,9 +10,12 @@ public class MeEndpoints
 {
     public static void Map(IEndpointRouteBuilder app)
     {
-        var me = app.MapGroup("/me");
-        me.MapGet("/", GetMe);
-        me.MapPut("/username", ChangeUsername);
+        var me = app.MapGroup("/me").WithTags("Me").ProducesProblem(401);
+        me.MapGet("/", GetMe)
+            .WithSummary("Returns the current user's profile (created on first call).");
+        me.MapPut("/username", ChangeUsername)
+            .WithSummary("Sets or changes the current user's username.")
+            .ProducesProblems(400, 409);
     }
 
     private static async Task<MeDto> GetMe(GameDbContext db, ICurrentUser currentUser)

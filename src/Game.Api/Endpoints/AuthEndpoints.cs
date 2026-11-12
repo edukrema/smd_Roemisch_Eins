@@ -10,7 +10,10 @@ public class AuthEndpoints
 {
     public static void Map(IEndpointRouteBuilder app)
     {
-        app.MapPost("/auth/login", Login).AllowAnonymous();
+        app.MapPost("/auth/login", Login).AllowAnonymous()
+            .WithTags("Auth")
+            .WithSummary("Signs in and returns a JWT; an unknown username registers a new account.")
+            .ProducesProblems(400, 409);
     }
 
     /// <summary>Signs in; an unknown username registers a new account on the fly.</summary>

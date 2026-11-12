@@ -13,17 +13,35 @@ public class GameEndpoints
 {
     public static void Map(IEndpointRouteBuilder app)
     {
-        var games = app.MapGroup("/games");
-        games.MapGet("/", GetOpenLobbies);
-        games.MapPost("/", CreateGame);
-        games.MapGet("/{id:guid}", GetGame);
-        games.MapDelete("/{id:guid}", DeleteGame);
-        games.MapPost("/{id:guid}/join", Join);
-        games.MapPost("/{id:guid}/leave", Leave);
-        games.MapPost("/{id:guid}/start", Start);
-        games.MapPost("/{id:guid}/end", End);
-        games.MapPut("/{id:guid}/settings", UpdateSettings);
-        games.MapPut("/{id:guid}/participants/{userId:guid}/attributes", ReplaceAttributes);
+        var games = app.MapGroup("/games").WithTags("Games").ProducesProblem(401);
+        games.MapGet("/", GetOpenLobbies)
+            .WithSummary("Lists open lobbies the user is neither leading nor playing in.");
+        games.MapPost("/", CreateGame)
+            .WithSummary("Creates a new lobby with the current user as game master.");
+        games.MapGet("/{id:guid}", GetGame)
+            .WithSummary("Returns the game with its players and attributes (game master and players only).")
+            .ProducesProblems(403, 404);
+        games.MapDelete("/{id:guid}", DeleteGame)
+            .WithSummary("Deletes the game (game master, only in Lobby or Finished).")
+            .ProducesProblems(403, 404, 409);
+        games.MapPost("/{id:guid}/join", Join)
+            .WithSummary("Joins the game as a player (only in Lobby, if not full).")
+            .ProducesProblems(404, 409);
+        games.MapPost("/{id:guid}/leave", Leave)
+            .WithSummary("Leaves the game as a player.")
+            .ProducesProblems(404, 409);
+        games.MapPost("/{id:guid}/start", Start)
+            .WithSummary("Starts the game (game master, at least one player required).")
+            .ProducesProblems(403, 404, 409);
+        games.MapPost("/{id:guid}/end", End)
+            .WithSummary("Ends the game (game master).")
+            .ProducesProblems(403, 404, 409);
+        games.MapPut("/{id:guid}/settings", UpdateSettings)
+            .WithSummary("Changes the maximum number of players (game master, only in Lobby).")
+            .ProducesProblems(400, 403, 404, 409);
+        games.MapPut("/{id:guid}/participants/{userId:guid}/attributes", ReplaceAttributes)
+            .WithSummary("Replaces all attributes of a player (game master).")
+            .ProducesProblems(400, 403, 404, 409);
     }
 
     /// <summary>Open lobbies in which the user is neither game master nor player.</summary>
